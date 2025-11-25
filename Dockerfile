@@ -1,7 +1,7 @@
 FROM alpine AS base
 WORKDIR /code
 RUN apk update && apk add --no-cache libjpeg-turbo-dev make cmake gcc g++
-COPY . /code/maze_api
+COPY . /code/
 
 FROM base AS build
 RUN cmake -D CMAKE_BUILD_TYPE=Release -B ./build/Release -S .
