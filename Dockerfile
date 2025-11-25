@@ -12,3 +12,5 @@ RUN cmake --install ./build/Release --prefix /code/install --verbose
 FROM base AS publish
 COPY --from=build /code/install /install
 EXPOSE 8080
+
+CMD [ "/install/maze_api_cpp" ]
