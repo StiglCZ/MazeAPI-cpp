@@ -4,7 +4,6 @@
 #include "httplib.hh"
 
 #include <csignal>
-#include <iostream>
 #include <string>
 #include <vector>
 
