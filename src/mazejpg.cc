@@ -99,6 +99,11 @@ void OnRequest(const httplib::Request& req, httplib::Response& res) {
     size_t imageSize = CreateImage(scaled_width, scaled_height, rgb, imageData);
     delete[] rgb;
 
+    // In case the seed is the same
+    res.set_header("Cache-Control", "no-cache, no-store, must-revalidate");
+    res.set_header("Pragma", "no-cache");
+    res.set_header("Expires", "0");
+
     res.set_content(std::string((char*)imageData, imageSize), "image/jpeg");
     free(imageData);
 }
@@ -111,12 +116,19 @@ void signalHandler(int) {
     exit(0);
 }
 
+void HttpErrorLogger(const httplib::Error& err, const httplib::Request* req) {
+    std::cout << "Http Server Error: " << err << std::endl;
+}
+
 int main() {
     signal(SIGINT, signalHandler);
     signal(SIGQUIT, signalHandler);
     signal(SIGTERM, signalHandler);
 
     server.Get("/", OnRequest);
+    server.set_error_logger(HttpErrorLogger);
+    std::cout << "Listening on 0.0.0.0:8080" << std::endl;
+
     bool serverSuccess = server.listen("0.0.0.0", 8080);
     if(serverSuccess) {
         std::cout << "Listening failed!";
