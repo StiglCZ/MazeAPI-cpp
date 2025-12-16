@@ -8,7 +8,7 @@ RUN mkdir -pv /code/install
 RUN cmake --install ./build/Release --prefix /code/install --verbose
 
 FROM alpine AS publish
-RUN apk add --no-cache libjpeg-turbo
+RUN apk add --no-cache libjpeg-turbo libstdc++ libgcc
 COPY --from=build /code/install /install
 EXPOSE 8080
 
