@@ -23,7 +23,8 @@ const std::string
     width_q = "width",
     height_q = "height",
     seed_q = "seed",
-    scale_q = "scale";
+    scale_q = "scale",
+    revisit_q = "revisit";
 
 i32 insecure_strhash_djb2(std::string str) {
     if(str.size() > max_seedlen)
@@ -46,6 +47,7 @@ void OnRequest(const httplib::Request& req, httplib::Response& res) {
     i32 seed = 0;
     u16 width = default_width, height = default_height;
     i32 scale = default_scale;
+    bool revisit = false;
 
     if(req.has_param(width_q))
         width = parse_dimension(req.get_param_value(width_q), default_width, min_size, max_size);
@@ -55,6 +57,8 @@ void OnRequest(const httplib::Request& req, httplib::Response& res) {
         seed = insecure_strhash_djb2(req.get_param_value(seed_q));
     if(req.has_param(scale_q))
         scale = parse_dimension(req.get_param_value(scale_q), default_scale, min_scale, max_scale);
+    if(req.has_param(revisit_q))
+        revisit = true;
 
     width = width * 2 + 1;
     height = height * 2 + 1;
@@ -62,7 +66,7 @@ void OnRequest(const httplib::Request& req, httplib::Response& res) {
     u16 scaled_width = width * scale;
     u16 scaled_height = height * scale;
 
-    const std::vector<std::vector<u8>> maze = CreateMaze(width, height, seed);
+    const std::vector<std::vector<u8>> maze = CreateMaze(width, height, seed, revisit);
     u8* rgb = new u8[scaled_width * scaled_height * 3];
     memset(rgb, 0, scaled_width * scaled_height * 3);
 
