@@ -115,7 +115,9 @@ vector<vector<u8>> CreateMaze(u16 Width, u16 Height, i32 Seed, bool revisit) {
 
     field[field.size() -2][field[0].size() -2] = Materials::Finish;
 
-    if(revisit)
+    if(revisit) {
         RemoveSnakeEyes(Width, Height, field);
+        field[1][1] = Materials::Start; // In case our start gets overwriten
+    }
     return field;
 }
